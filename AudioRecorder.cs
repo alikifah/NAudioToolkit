@@ -27,6 +27,8 @@ namespace NAudioToolkit
 
         // a counter to keep track of the number of samples added to the buffer
         private int _currentBufferIndex;
+
+        private bool _isDisposed = false; 
         #endregion
 
         #region public members
@@ -95,12 +97,15 @@ namespace NAudioToolkit
         {
             Stop();
             _waveIn.Dispose();
+            _isDisposed = true;
         }
         #endregion
 
         #region public methods
         public void Start()
         {
+         if (_isDisposed)
+                throw new ObjectDisposedException(nameof(AudioRecorder<T>));
             if (IsRecording) return;
             IsRecording = true;
             _waveIn.StartRecording();
@@ -108,6 +113,8 @@ namespace NAudioToolkit
         
         public void Stop()
         {
+         if (_isDisposed)
+                throw new ObjectDisposedException(nameof(AudioRecorder<T>));
             if (!IsRecording) return;
             IsRecording = false;
             _waveIn.StopRecording();
